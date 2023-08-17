@@ -1,0 +1,44 @@
+﻿@using System.Globalization
+@inject StoreContext Context
+
+<MudStack Row="true" Spacing="6">
+    <MudImage Src="@CartItem.Product?.ThumbnailUri" Width="192" Height="192" Class="rounded" />
+    <MudGrid>
+        <MudItem xs="6">
+            <MudText Typo="Typo.subtitle1"><b>@CartItem.Product?.Name</b></MudText>
+        </MudItem>
+        <MudItem xs="2">
+            <MudNumericField Variant=Variant.Outlined Margin="Margin.Dense"
+                             Min="1" Max="5" T="int" Value="@CartItem.Quantity" ValueChanged="Update" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudStack AlignItems="AlignItems.End" Justify="Justify.SpaceBetween" Class="mud-height-full">
+                <MudText Typo="Typo.subtitle1">
+                    <b>@((CartItem.Product?.Price * CartItem.Quantity)?.ToString("C2", CultureInfo.CreateSpecificCulture("en-PH")))</b>
+                </MudText>
+                <MudButton OnClick="() => OnRemoved.InvokeAsync(CartItem)" Color="Color.Primary" Size="Size.Small">Remove</MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public CartItem CartItem { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<CartItem> OnRemoved { get; set; }
+
+    private void Update(int value)
+    {
+        CartItem.Quantity = value;
+        Context.SaveChanges();
+    }
+
+    private void CallRemove()
+    {
+        Context.CartItems.Remove(CartItem);
+        Context.SaveChanges();
+        StateHasChanged();
+    }
+}

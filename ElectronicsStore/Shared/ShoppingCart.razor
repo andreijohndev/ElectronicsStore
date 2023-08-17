@@ -1,0 +1,22 @@
+﻿@using Microsoft.EntityFrameworkCore
+
+@if (ShopSession?.CartItems?.Count > 0)
+{
+    <MudBadge Content="@ShopSession?.CartItems?.Count" Overlap="true" Class="mx-6 my-4" Color="Color.Primary">
+        <MudIconButton Href="/cart" Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Inherit" Edge="Edge.End" />
+    </MudBadge>
+}
+else
+{
+    <MudIconButton Href="/cart" Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Inherit" Edge="Edge.End" />
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public ShopSession ShopSession { get; set; } = null!;
+
+    public void Reload()
+    {
+        StateHasChanged();
+    }
+}
